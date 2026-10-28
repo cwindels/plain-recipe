@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plain Recipe</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* Layout: one calm reading column, install steps first, then a live try-it panel that shows the exact card the bookmarklet draws. */
+:root{ color-scheme:light;
+  --bg:#f5f6f0; --surface:#ffffff; --ink:#1d2219; --muted:#5b6554; --line:#dde2d3;
+  --accent:#3d6a35; --accent-ink:#ffffff; --tint:#e8eee0;
+  --display:"Young Serif",Georgia,"Times New Roman",serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#131611; --surface:#1b1f18; --ink:#e6eadf; --muted:#9aa390; --line:#2d3428;
+  --accent:#8fc17f; --accent-ink:#10140e; --tint:#212a1d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131611; --surface:#1b1f18; --ink:#e6eadf; --muted:#9aa390; --line:#2d3428;
+  --accent:#8fc17f; --accent-ink:#10140e; --tint:#212a1d; color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1,h2{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.2rem,6vw,3.2rem);line-height:1.05}
+h2{font-size:1.55rem}
+p{margin:0;max-width:65ch}
+.lede{color:var(--muted);font-size:1.1rem;margin-top:12px}
+section{display:flex;flex-direction:column;gap:16px}
+.eyebrow{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
+ol.how{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:14px}
+ol.how li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start}
+ol.how li::before{content:counter(s);font-family:var(--display);width:32px;height:32px;border-radius:50%;background:var(--tint);color:var(--accent);display:grid;place-items:center}
+ol.how li>div{min-width:0;padding-top:4px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.bm{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:600;padding:10px 18px;border-radius:999px;cursor:grab;border:0;font:inherit;font-weight:600}
+.bm:active{cursor:grabbing}
+.btn{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font:inherit;font-weight:500;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{color:var(--accent-ink);filter:brightness(1.08)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hint{color:var(--muted);font-size:.9rem}
+.status{font-size:.9rem;color:var(--accent);min-height:1.4em}
+details{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:12px 16px}
+summary{cursor:pointer;font-weight:600}
+details>div{margin-top:10px;display:flex;flex-direction:column;gap:10px}
+textarea{width:100%;box-sizing:border-box;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px;font:13px/1.5 var(--mono);resize:vertical}
+#code{height:90px}
+#src{height:150px}
+kbd{font:12px var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--surface)}
+.tag{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;background:var(--tint);color:var(--accent);padding:3px 10px;border-radius:999px;font-weight:600}
+#out{min-width:0}
+.empty{border:1px dashed var(--line);border-radius:14px;padding:24px;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Plain Recipe</h1>
+    <p class="lede">One click on any recipe page and the life story, pop-ups and ads disappear. You get the ingredients and the steps, nothing else. Free, runs in your own browser, sends nothing anywhere.</p>
+  </header>
+
+  <section aria-labelledby="install-h">
+    <span class="eyebrow">Set up once</span>
+    <h2 id="install-h">Add the button to your bookmarks</h2>
+    <ol class="how">
+      <li><div>Show your bookmarks bar: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> on Windows, <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> on Mac.</div></li>
+      <li><div>
+        <div class="row" style="margin-bottom:8px">
+          <a class="bm" id="bm" href="#">Plain Recipe</a>
+          <button class="btn" id="copy" type="button">Copy the code instead</button>
+        </div>
+        Drag the green button up onto your bookmarks bar. If dragging doesn't work, copy the code, make a new bookmark named “Plain Recipe”, and paste the code into its URL field.
+        <div class="status" id="copyStatus" role="status"></div>
+      </div></li>
+      <li><div>Open any recipe (AllRecipes, NYT Cooking, Serious Eats, food blogs) and click <strong>Plain Recipe</strong>. Tap ingredients to tick them off and steps to cross them out. Use <strong>Print</strong> on the card to print just the recipe, and press <kbd>Esc</kbd> to go back to the page.</div></li>
+    </ol>
+    <details>
+      <summary>On a phone or tablet</summary>
+      <div>
+        <p>Bookmark any page, then edit that bookmark: rename it “Plain Recipe” and replace its address with the code below. On a recipe page, open your bookmarks and tap it. In Chrome on Android you can also type “Plain Recipe” in the address bar and pick the bookmark.</p>
+        <textarea id="code" readonly aria-label="Bookmarklet code"></textarea>
+      </div>
+    </details>
+  </section>
+
+  <section aria-labelledby="try-h">
+    <span class="eyebrow">Or try it here</span>
+    <h2 id="try-h">Paste a page's source</h2>
+    <p class="hint">No bookmark needed: on the recipe page press <kbd>Ctrl</kbd>+<kbd>U</kbd> (<kbd>⌘</kbd>+<kbd>Option</kbd>+<kbd>U</kbd> on Mac) to view its source, select all, copy, and paste it here. The box below starts with an example page.</p>
+    <textarea id="src" aria-label="Page source"></textarea>
+    <div class="row">
+      <button class="btn primary" id="run" type="button">Pull out the recipe</button>
+      <button class="btn" id="clear" type="button">Clear</button>
+    </div>
+    <div id="out"></div>
+  </section>
+</div>
+
+<script>
+function core(doc, mount, srcLabel) {
+  var D = mount ? mount.ownerDocument : doc;
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+  var dec = function (s) {
+    if (s == null) return '';
+    var t = doc.createElement('textarea');
+    t.innerHTML = String(s).replace(/<[^>]*>/g, ' ');
+    return t.value.replace(/\s+/g, ' ').trim();
+  };
+  var isRecipe = function (o) {
+    return [].concat(o['@type'] || []).some(function (t) { return String(t).replace(/^.*\//, '') === 'Recipe'; });
+  };
+  var find = function (o) {
+    if (!o || typeof o !== 'object') return null;
+    if (Array.isArray(o)) { for (var i = 0; i < o.length; i++) { var a = find(o[i]); if (a) return a; } return null; }
+    if (isRecipe(o)) return o;
+    var keys = ['@graph', 'mainEntity', 'itemListElement'];
+    for (var k = 0; k < keys.length; k++) { if (o[keys[k]]) { var b = find(o[keys[k]]); if (b) return b; } }
+    return null;
+  };
+  var dur = function (s) {
+    var m = String(s || '').match(/P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?)?/);
+    if (!m) return '';
+    var h = (+m[2] || 0) + 24 * (+m[1] || 0), mi = +m[3] || 0;
+    if (mi >= 60) { h += Math.floor(mi / 60); mi = mi % 60; }
+    return [h ? h + ' hr' : '', mi ? mi + ' min' : ''].filter(Boolean).join(' ');
+  };
+  var r = null, data = null;
+  var scripts = doc.querySelectorAll('script[type="application/ld+json"]');
+  for (var i = 0; i < scripts.length && !r; i++) { try { r = find(JSON.parse(scripts[i].textContent)); } catch (e) {} }
+  if (r) {
+    var steps = [];
+    var walk = function (x, sec) {
+      if (!x) return;
+      if (typeof x === 'string') { x.split(/\n+/).forEach(function (l) { l = dec(l); if (l) steps.push({ t: l, sec: sec }); }); return; }
+      if (Array.isArray(x)) { x.forEach(function (y) { walk(y, sec); }); return; }
+      if (/HowToSection/.test([].concat(x['@type'] || []).join())) { walk(x.itemListElement, dec(x.name)); return; }
+      if (x.itemListElement) { walk(x.itemListElement, sec); return; }
+      walk(x.text || x.name, sec);
+    };
+    walk(r.recipeInstructions, '');
+    var y = [].concat(r.recipeYield || []).map(dec).filter(Boolean).sort(function (a, b) { return b.length - a.length; })[0] || '';
+    if (/^\d+$/.test(y)) y = y + ' servings';
+    data = { name: dec(r.name), yield: y, prep: dur(r.prepTime), cook: dur(r.cookTime), total: dur(r.totalTime),
+      ing: [].concat(r.recipeIngredient || r.ingredients || []).map(dec).filter(Boolean), steps: steps };
+  } else {
+    var ing = [].map.call(doc.querySelectorAll('[itemprop=recipeIngredient],[itemprop=ingredients]'), function (e) { return dec(e.textContent); }).filter(Boolean);
+    if (ing.length) {
+      var st = [];
+      [].forEach.call(doc.querySelectorAll('[itemprop=recipeInstructions]'), function (e) {
+        var li = e.querySelectorAll('li');
+        if (li.length) [].forEach.call(li, function (x) { st.push({ t: dec(x.textContent), sec: '' }); });
+        else st.push({ t: dec(e.textContent), sec: '' });
+      });
+      var nm = doc.querySelector('[itemprop=name]');
+      data = { name: nm ? dec(nm.textContent) : dec(doc.title), yield: '', prep: '', cook: '', total: '', ing: ing, steps: st.filter(function (s) { return s.t; }) };
+    }
+  }
+  var txt = function (e) { return dec(e.textContent).replace(/^[▢☐□\s]+/, ''); };
+  if (data) data.ing = [{ name: '', items: data.ing }];
+  var box = doc.querySelector('.wprm-recipe-ingredients-container,.tasty-recipes-ingredients,.mv-create-ingredients,.recipe-ingredients,.wprm-recipe-ingredients');
+  var cg = [];
+  if (box) {
+    var cur = null;
+    [].forEach.call(box.querySelectorAll('h2,h3,h4,h5,h6,p,li'), function (e) {
+      if (e.tagName === 'LI') {
+        if (e.querySelector('li')) return;
+        var t = txt(e); if (!t) return;
+        if (!cur) { cur = { name: '', items: [] }; cg.push(cur); }
+        cur.items.push(t); return;
+      }
+      if (e.closest('li')) return;
+      if (e.tagName === 'P' && !(e.children.length === 1 && /^(STRONG|B)$/.test(e.children[0].tagName) && txt(e) === txt(e.children[0]))) return;
+      var nm2 = txt(e).replace(/:$/, '');
+      if (/^ingredients$/i.test(nm2)) nm2 = '';
+      cur = { name: nm2, items: [] }; cg.push(cur);
+    });
+    cg = cg.filter(function (g) { return g.items.length; });
+  }
+  var cardCount = cg.reduce(function (a, g) { return a + g.items.length; }, 0);
+  var ldCount = data ? data.ing[0].items.length : 0;
+  if (cardCount && (cardCount >= ldCount * 0.6) && (!data || cg.some(function (g) { return g.name; }) || !ldCount)) {
+    if (!data) {
+      var h1 = doc.querySelector('.wprm-recipe-name,.tasty-recipes-title,.mv-create-title,h1');
+      data = { name: h1 ? txt(h1) : dec(doc.title), yield: '', prep: '', cook: '', total: '',
+        steps: [].map.call(doc.querySelectorAll('.wprm-recipe-instruction-text,.tasty-recipes-instructions li,.mv-create-instructions li'), function (e) { return { t: txt(e), sec: '' }; }).filter(function (s) { return s.t; }) };
+    }
+    data.ing = cg;
+  }
+  if (data) {
+    var nb = doc.querySelector('.wprm-recipe-notes,.tasty-recipes-notes-body,.tasty-recipes-notes,.mv-create-notes-content,.mv-create-notes');
+    var ns = [];
+    if (nb) {
+      ns = [].map.call(nb.querySelectorAll('p,li'), txt).filter(Boolean);
+      if (!ns.length) { var whole = txt(nb).replace(/^notes:?\s*/i, ''); if (whole) ns = [whole]; }
+    }
+    data.notes = ns.filter(function (s, i) { return ns.indexOf(s) === i && !/^notes:?$/i.test(s); });
+  }
+  if (!data) { if (!mount) alert('Plain Recipe: this page has no recipe data it can read.'); return null; }
+
+  var meta = [['Serves', data.yield], ['Prep', data.prep], ['Cook', data.cook], ['Total', data.total]]
+    .filter(function (p) { return p[1]; })
+    .map(function (p) { return '<span><b>' + p[0] + '</b> ' + esc(p[1]) + '</span>'; }).join('');
+  var groups = [], n = 1;
+  data.steps.forEach(function (s) {
+    var g = groups[groups.length - 1];
+    if (!g || g.sec !== s.sec) { g = { sec: s.sec, start: n, items: [] }; groups.push(g); }
+    g.items.push(s.t); n++;
+  });
+  var stepsHtml = groups.map(function (g) {
+    return (g.sec ? '<h3>' + esc(g.sec) + '</h3>' : '') + '<ol start="' + g.start + '">' +
+      g.items.map(function (t) { return '<li tabindex="0">' + esc(t) + '</li>'; }).join('') + '</ol>';
+  }).join('') || '<p class="none">No steps listed on this page.</p>';
+  var ingHtml = data.ing.map(function (g) {
+    return (g.name ? '<h3' + (/optional/i.test(g.name) ? ' class="opt"' : '') + '>' + esc(g.name) + '</h3>' : '') + '<ul>' +
+      g.items.map(function (t) { return '<li><label><input type="checkbox"><span>' + esc(t) + '</span></label></li>'; }).join('') + '</ul>';
+  }).join('');
+  var notesHtml = data.notes && data.notes.length ? '<section class="n"><h2>Notes</h2><ul class="nl">' +
+    data.notes.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul></section>' : '';
+  var src = srcLabel || doc.location && doc.location.hostname || '';
+
+  var old = D.getElementById('__plainrecipe'); if (old) old.remove();
+  var host = D.createElement('div');
+  host.id = '__plainrecipe';
+  host.style.cssText = mount ? 'display:block' : 'position:fixed;inset:0;z-index:2147483647;';
+  var sh = host.attachShadow({ mode: 'open' });
+  sh.innerHTML = '<style>' +
+    '.w{--b:#f5f6f0;--s:#fff;--i:#1d2219;--m:#5b6554;--l:#dde2d3;--a:#3d6a35;--t:#e8eee0;' +
+    'position:absolute;inset:0;overflow:auto;background:var(--b);color:var(--i);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}' +
+    '@media (prefers-color-scheme:dark){.w{--b:#131611;--s:#1b1f18;--i:#e6eadf;--m:#9aa390;--l:#2d3428;--a:#8fc17f;--t:#212a1d;color-scheme:dark}}' +
+    '.w.in{position:static;overflow:visible;border:1px solid var(--l);border-radius:16px}' +
+    '.c{max-width:880px;margin:0 auto;padding:28px max(18px,env(safe-area-inset-right,0px)) 48px max(18px,env(safe-area-inset-left,0px));box-sizing:border-box}' +
+    '.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}' +
+    '.brand{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--a);font-weight:700}' +
+    '.x{background:var(--s);color:var(--i);border:1px solid var(--l);border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;cursor:pointer}' +
+    'h1{font:400 clamp(28px,5vw,40px)/1.15 Georgia,"Times New Roman",serif;margin:4px 0 12px;text-wrap:balance}' +
+    '.m{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--m);font-size:15px;margin-bottom:24px}.m b{color:var(--i);font-weight:600}' +
+    '.g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:36px}' +
+    '@media (max-width:640px){.g{grid-template-columns:minmax(0,1fr)}}' +
+    '.w.in .g{gap:28px}' +
+    'h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--a);margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--l)}' +
+    'h3{font-size:16px;margin:18px 0 6px}' +
+    'ul{list-style:none;margin:0;padding:0}ul li{border-bottom:1px solid var(--l)}' +
+    'label{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer}' +
+    'input{margin-top:5px;accent-color:var(--a);width:16px;height:16px;flex:none}' +
+    'input:checked+span{color:var(--m);text-decoration:line-through}' +
+    'ol{margin:0;padding-left:1.4em}ol li{padding:6px 0 10px 4px;cursor:pointer}ol li::marker{color:var(--a);font-weight:700}' +
+    'ol li.d{color:var(--m);text-decoration:line-through}' +
+    ':focus-visible{outline:2px solid var(--a);outline-offset:2px}' +
+    '.f{margin-top:32px;color:var(--m);font-size:13px}.none{color:var(--m)}' +
+    '.acts{display:flex;gap:8px}' +
+    'section>h2+h3{margin-top:0}h3.opt{color:var(--a);font-style:italic}' +
+    '.n{margin-top:32px}.nl{list-style:none}.nl li{padding:8px 0;border-bottom:1px solid var(--l)}' +
+    '@media print{.w{--b:#fff;--s:#fff;--i:#000;--m:#444;--l:#ccc;--a:#000;position:static;overflow:visible;font-size:12pt;color-scheme:light}' +
+    '.c{max-width:none;padding:0}.acts{display:none}.g{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:24px}' +
+    'h1{font-size:22pt;margin-top:0}label{padding:3px 0}ol li{padding:2px 0 6px 4px;break-inside:avoid}input{display:none}' +
+    'input:checked+span,ol li.d{text-decoration:none;color:#000}}' +
+    '</style>' +
+    '<div class="w' + (mount ? ' in' : '') + '"><div class="c">' +
+    '<div class="top"><span class="brand">Plain Recipe</span>' + (mount ? '' : '<span class="acts"><button class="x p" type="button">Print</button><button class="x c0" type="button">Back to page (Esc)</button></span>') + '</div>' +
+    '<h1>' + esc(data.name || 'Recipe') + '</h1>' + (meta ? '<div class="m">' + meta + '</div>' : '') +
+    '<div class="g"><section><h2>Ingredients</h2>' + ingHtml + '</section>' +
+    '<section><h2>Steps</h2>' + stepsHtml + '</section></div>' + notesHtml +
+    (src ? '<p class="f">From ' + esc(src) + '</p>' : '') + '</div></div>';
+  [].forEach.call(sh.querySelectorAll('ol li'), function (li) {
+    var t = function () { li.classList.toggle('d'); };
+    li.addEventListener('click', t);
+    li.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); t(); } });
+  });
+  if (mount) { mount.innerHTML = ''; mount.appendChild(host); return data; }
+  var root = D.documentElement, prev = root.style.overflow;
+  var oldPs = D.getElementById('__plainrecipe_print'); if (oldPs) oldPs.remove();
+  var ps = D.createElement('style');
+  ps.id = '__plainrecipe_print';
+  ps.textContent = '@media print{html,body{overflow:visible!important;height:auto!important;background:#fff!important;margin:0!important;padding:0!important}' +
+    'body>*:not(#__plainrecipe){display:none!important}' +
+    '#__plainrecipe{position:static!important;inset:auto!important;display:block!important}' +
+    '@page{margin:14mm}}';
+  (D.head || root).appendChild(ps);
+  var close = function () { host.remove(); ps.remove(); root.style.overflow = prev; D.removeEventListener('keydown', onKey, true); };
+  var onKey = function (e) { if (e.key === 'Escape') close(); };
+  sh.querySelector('.c0').addEventListener('click', close);
+  sh.querySelector('.p').addEventListener('click', function () { (D.defaultView || window).print(); });
+  D.addEventListener('keydown', onKey, true);
+  root.style.overflow = 'hidden';
+  D.body.appendChild(host);
+  return data;
+}
+
+(function () {
+  var BM = 'javascript:' + encodeURIComponent('(' + core.toString().replace(/\s*\n\s*/g, ' ') + ')(document)');
+  var bm = document.getElementById('bm'), code = document.getElementById('code'), status = document.getElementById('copyStatus');
+  bm.href = BM;
+  code.value = BM;
+  bm.addEventListener('click', function (e) { e.preventDefault(); status.textContent = 'Drag this button onto your bookmarks bar rather than clicking it here.'; });
+  document.getElementById('copy').addEventListener('click', function () {
+    var fallback = function () { code.closest('details').open = true; code.focus(); code.select(); status.textContent = 'Code selected below. Press Ctrl+C (or ⌘+C) to copy it.'; };
+    try {
+      navigator.clipboard.writeText(BM).then(function () { status.textContent = 'Copied. Paste it into a new bookmark’s URL field.'; }, fallback);
+    } catch (e) { fallback(); }
+  });
+
+  var SAMPLE = '<!doctype html><html><head><title>The Best Pancakes You’ll Ever Make | A Very Long Food Blog</title>\n' +
+    '<script type="application/ld+json">' + JSON.stringify({
+      '@context': 'https://schema.org', '@graph': [
+        { '@type': 'WebPage', name: 'The Best Pancakes' },
+        { '@type': 'Recipe', name: 'Brown Butter Buttermilk Pancakes', recipeYield: ['4', '12 pancakes'],
+          prepTime: 'PT10M', cookTime: 'PT20M', totalTime: 'PT30M',
+          recipeIngredient: ['2 cups (250 g) all-purpose flour', '2 tbsp sugar', '1 1/2 tsp baking powder', '1/2 tsp baking soda', '3/4 tsp kosher salt', '2 cups buttermilk', '2 large eggs', '4 tbsp unsalted butter, plus more for the pan', '1 tsp vanilla extract', '1 cup blueberries', '1 tsp lemon zest'],
+          recipeInstructions: [
+            { '@type': 'HowToSection', name: 'Batter', itemListElement: [
+              { '@type': 'HowToStep', text: 'Melt the butter in a small pan over medium heat and cook, swirling, until it smells nutty and the solids turn golden brown, about 4 minutes. Let it cool slightly.' },
+              { '@type': 'HowToStep', text: 'Whisk the flour, sugar, baking powder, baking soda and salt in a large bowl.' },
+              { '@type': 'HowToStep', text: 'In another bowl whisk the buttermilk, eggs, vanilla and brown butter. Pour into the dry ingredients and stir until just combined; a few lumps are fine. Rest 5 minutes.' } ] },
+            { '@type': 'HowToSection', name: 'Cooking', itemListElement: [
+              { '@type': 'HowToStep', text: 'Heat a griddle over medium-low and brush with butter. Pour 1/4 cup batter per pancake.' },
+              { '@type': 'HowToStep', text: 'Cook until bubbles cover the surface and the edges look set, about 2 minutes. Flip and cook 1 minute more. Serve hot.' } ] } ] } ] }, null, 1) +
+    '<\/script></head>\n<body><article><p>Let me tell you about the summer my grandmother taught me to make pancakes…</p>\n<p>(Thousands more words, twelve ads and a newsletter pop-up.)</p>\n' +
+    '<div class="wprm-recipe-ingredients-container">\n' +
+    ' <div class="wprm-recipe-ingredient-group"><ul>' +
+    ['2 cups (250 g) all-purpose flour', '2 tbsp sugar', '1 1/2 tsp baking powder', '1/2 tsp baking soda', '3/4 tsp kosher salt', '2 cups buttermilk', '2 large eggs', '4 tbsp unsalted butter, plus more for the pan', '1 tsp vanilla extract']
+      .map(function (s) { return '<li class="wprm-recipe-ingredient">' + s + '</li>'; }).join('') + '</ul></div>\n' +
+    ' <div class="wprm-recipe-ingredient-group"><h4 class="wprm-recipe-group-name">Optional add-ins (fold in one or both)</h4><ul>' +
+    '<li class="wprm-recipe-ingredient">1 cup blueberries, fresh or frozen</li><li class="wprm-recipe-ingredient">1 tsp lemon zest, for brightness</li></ul></div>\n' +
+    '</div>\n<div class="wprm-recipe-notes"><p>Keep finished pancakes warm on a rack in a 200°F oven while you cook the rest.</p><p>Leftovers freeze well for up to 2 months; reheat in the toaster.</p></div></article></body></html>';
+
+  var srcBox = document.getElementById('src'), out = document.getElementById('out');
+  var run = function (label) {
+    var text = srcBox.value.trim();
+    if (!text) { out.innerHTML = '<p class="empty">Paste a recipe page’s source above, then press <strong>Pull out the recipe</strong>.</p>'; return; }
+    if (/^[\[{]/.test(text)) text = '<script type="application/ld+json">' + text + '<\/script>';
+    var doc = new DOMParser().parseFromString(text, 'text/html');
+    var data = core(doc, out, label);
+    if (!data) out.innerHTML = '<p class="empty">No recipe data found in that source. Make sure you copied the whole page source (view-source), not just the visible text.</p>';
+  };
+  srcBox.value = SAMPLE;
+  run('Example page');
+  var lab = document.createElement('p'); lab.innerHTML = '<span class="tag">Example</span>'; out.insertBefore(lab, out.firstChild); lab.style.marginBottom = '10px';
+  document.getElementById('run').addEventListener('click', function () { run('Pasted page'); });
+  document.getElementById('clear').addEventListener('click', function () { srcBox.value = ''; srcBox.focus(); run(); });
+})();
+</script>
+</body>
+</html>
